@@ -66,6 +66,13 @@ const els = {
   importInput: document.querySelector("#importInput")
 };
 
+if (window.notasUpdater) {
+  window.notasUpdater.onStatus((payload) => {
+    if (!payload?.message) return;
+    els.statusLine.textContent = payload.message;
+  });
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
