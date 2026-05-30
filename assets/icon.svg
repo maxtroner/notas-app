@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Notas">
+  <rect width="256" height="256" rx="48" fill="#1f6f50"/>
+  <path fill="#fffdf8" d="M72 54h82l30 30v118H72z"/>
+  <path fill="#dcece4" d="M154 54v30h30z"/>
+  <path fill="#1f6f50" d="M94 111h68v12H94zm0 30h68v12H94zm0 30h48v12H94z"/>
+</svg>

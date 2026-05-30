@@ -1,0 +1,53 @@
+{
+  "name": "notas-evernote-windows",
+  "version": "1.0.0",
+  "description": "Sistema de notas local inspirado en Evernote para Windows 11.",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis",
+    "web": "npx http-server . -p 4173 -c-1"
+  },
+  "keywords": [
+    "notas",
+    "evernote",
+    "windows",
+    "electron",
+    "pwa"
+  ],
+  "author": "MaxtronerPC",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12",
+    "http-server": "^14.1.1"
+  },
+  "build": {
+    "appId": "com.maxtronerpc.notas",
+    "productName": "Notas",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "styles.css",
+      "app.js",
+      "manifest.webmanifest",
+      "sw.js",
+      "assets/**/*",
+      "main.cjs"
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

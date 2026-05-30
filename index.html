@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1f6f50">
+    <title>Notas</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=2">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navegacion principal">
+        <div class="brand-row">
+          <div class="brand-mark" aria-hidden="true">N</div>
+          <div>
+            <strong>Evernote Personal</strong>
+            <span>Plan Premium</span>
+          </div>
+        </div>
+
+        <div class="sidebar-search">
+          <span aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="Buscar notas...">
+        </div>
+
+        <button class="primary-action" id="newNoteButton" type="button">
+          <span aria-hidden="true">+</span>
+          Nueva nota
+        </button>
+
+        <nav class="nav-groups" aria-label="Vistas">
+          <button class="nav-item active" type="button" data-view="all">
+            <span aria-hidden="true">▣</span>
+            Notas
+            <em id="allCount">0</em>
+          </button>
+          <button class="nav-item" type="button" data-view="favorites">
+            <span aria-hidden="true">☆</span>
+            Accesos directos
+            <em id="favoriteCount">0</em>
+          </button>
+          <button class="nav-item muted-nav" type="button" data-view="tasks">
+            <span aria-hidden="true">☑</span>
+            Tareas
+            <em>0</em>
+          </button>
+        </nav>
+
+        <section class="sidebar-section">
+          <div class="section-title">
+            <span>Libretas</span>
+            <button class="side-add" id="addNotebookButton" type="button" title="Crear libreta">+</button>
+          </div>
+          <div class="notebook-list" id="notebookList"></div>
+        </section>
+
+        <section class="sidebar-section tags-section">
+          <div class="section-title">
+            <span>Etiquetas</span>
+            <span class="side-add" aria-hidden="true">+</span>
+          </div>
+          <div class="tag-cloud" id="tagCloud"></div>
+        </section>
+
+        <nav class="nav-groups bottom-nav" aria-label="Papelera">
+          <button class="nav-item" type="button" data-view="trash">
+            <span aria-hidden="true">♲</span>
+            Papelera
+            <em id="trashCount">0</em>
+          </button>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="ghost-action" id="exportButton" type="button">Exportar</button>
+          <label class="ghost-action file-picker">
+            Importar
+            <input id="importInput" type="file" accept="application/json">
+          </label>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <section class="note-list-panel" aria-label="Lista de notas">
+          <div class="list-meta">
+            <div>
+              <strong id="viewTitle">Notas</strong>
+              <span id="noteCountLabel">0 notas</span>
+            </div>
+            <button class="sort-button" id="sortButton" type="button" title="Ordenar">Mas recientes⌄</button>
+          </div>
+          <div class="note-list" id="noteList"></div>
+        </section>
+
+        <section class="editor-panel" aria-label="Editor de nota">
+          <div class="empty-state" id="emptyState">
+            <h1>Elige una nota o crea una nueva</h1>
+            <p>Tu contenido se guarda automaticamente en este equipo.</p>
+          </div>
+
+          <article class="editor" id="editor">
+            <header class="editor-header">
+              <div class="editor-meta">
+                <span class="book-icon" aria-hidden="true">▣</span>
+                <select id="notebookSelect" aria-label="Libreta"></select>
+                <span class="status-line" id="statusLine">Autoguardado activado</span>
+              </div>
+              <div class="editor-actions">
+                <button class="tool-button" type="button" id="favoriteButton" title="Favorita">☆</button>
+                <button class="tool-button danger" type="button" id="deleteButton" title="Eliminar">♲</button>
+              </div>
+            </header>
+
+            <div class="tag-editor">
+              <span aria-hidden="true">◇</span>
+              <input id="tagInput" type="text" placeholder="+ Etiqueta">
+            </div>
+
+            <div class="format-toolbar" aria-label="Formato">
+              <button class="tool-button" type="button" data-command="bold" title="Negrita"><strong>B</strong></button>
+              <button class="tool-button" type="button" data-command="italic" title="Cursiva"><em>I</em></button>
+              <button class="tool-button" type="button" data-command="underline" title="Subrayado"><u>U</u></button>
+              <button class="tool-button accent-tool" type="button" data-command="foreColor" data-value="#00a82d" title="Color">A</button>
+              <button class="tool-button" type="button" data-command="formatBlock" data-value="blockquote" title="Cita">⌁</button>
+              <span class="tool-separator"></span>
+              <button class="tool-button" type="button" data-command="insertUnorderedList" title="Lista">≡</button>
+              <button class="tool-button" type="button" data-command="insertOrderedList" title="Lista numerada">1.</button>
+              <button class="tool-button" type="button" data-command="insertHTML" data-value="<p>☐ </p>" title="Checklist">☑</button>
+              <span class="tool-separator"></span>
+              <button class="tool-button" type="button" data-command="formatBlock" data-value="pre" title="Codigo">&lt;&gt;</button>
+            </div>
+
+            <input id="titleInput" class="title-input" type="text" placeholder="Titulo de la nota">
+            <div id="contentInput" class="content-input" contenteditable="true" data-placeholder="Empieza a escribir..."></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js?v=2"></script>
+  </body>
+</html>

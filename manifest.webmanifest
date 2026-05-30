@@ -1,0 +1,17 @@
+{
+  "name": "Notas",
+  "short_name": "Notas",
+  "description": "Sistema de notas local inspirado en Evernote.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f4ee",
+  "theme_color": "#1f6f50",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
