@@ -74,9 +74,12 @@ function setupAutoUpdater() {
   });
 
   if (app.isPackaged) {
-    setTimeout(() => {
-      autoUpdater.checkForUpdatesAndNotify();
-    }, 3000);
+    const check = () => {
+      autoUpdater.checkForUpdates().catch(() => {});
+    };
+
+    setTimeout(check, 3000);
+    setInterval(check, 300000);
   }
 }
 
