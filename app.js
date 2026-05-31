@@ -107,11 +107,21 @@ function hideUpdateModal() {
   if (modal) modal.hidden = true;
 }
 
+document.querySelector("#updateInstallBtn")?.addEventListener("click", () => {
+  if (window.notasUpdater) window.notasUpdater.installUpdate();
+});
+document.querySelector("#updateLaterBtn")?.addEventListener("click", hideUpdateModal);
+document.querySelector("#updateModalClose")?.addEventListener("click", hideUpdateModal);
+document.querySelector("#updateModal")?.addEventListener("click", (e) => {
+  if (e.target === e.currentTarget) hideUpdateModal();
+});
+
 if (window.notasUpdater) {
   window.notasUpdater.onStatus((payload) => {
     if (!payload?.message) return;
     els.statusLine.textContent = payload.message;
     if (payload.state === "downloaded") {
+      hideUpdateModal();
       showUpdateModal(payload.version || "1.0.9", payload.message);
     }
   });
@@ -584,15 +594,6 @@ els.favoriteButton.addEventListener("click", () => {
 });
 els.deleteButton.addEventListener("click", deleteOrRestoreSelected);
 
-document.querySelector("#updateInstallBtn")?.addEventListener("click", () => {
-  if (window.notasUpdater) window.notasUpdater.installUpdate();
-});
-document.querySelector("#updateLaterBtn")?.addEventListener("click", hideUpdateModal);
-document.querySelector("#updateModalClose")?.addEventListener("click", hideUpdateModal);
-document.querySelector("#updateModal")?.addEventListener("click", (e) => {
-  if (e.target === e.currentTarget) hideUpdateModal();
-});
-
 function showContextMenu(x, y, note) {
   const menu = els.contextMenu;
   const icon = note.deleted ? restoreIcon() : trashIcon();
@@ -654,6 +655,7 @@ document.addEventListener("keydown", (e) => {
   }
   if (e.key === "Escape") {
     hideContextMenu();
+    hideUpdateModal();
     return;
   }
   if (e.key !== "Delete") return;
