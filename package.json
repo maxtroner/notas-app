@@ -1,6 +1,6 @@
 {
   "name": "codenote-app",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "CodeNote - Notas inteligentes para desarrolladores.",
   "main": "main.cjs",
   "scripts": {

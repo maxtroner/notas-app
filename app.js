@@ -41,7 +41,10 @@ const initialState = {
   activeView: "all",
   activeNotebookId: null,
   activeTag: null,
-  sortNewestFirst: true
+  sortNewestFirst: true,
+  projects: [],
+  activeProjectId: null,
+  activeProjectFile: null
 };
 
 let state = loadState();
@@ -77,7 +80,16 @@ const els = {
   updateBannerText: document.querySelector("#updateBannerText"),
   updateInstallBtn: document.querySelector("#updateInstallBtn"),
   updateDismissBtn: document.querySelector("#updateDismissBtn"),
-  themeToggle: document.querySelector("#themeToggle")
+  themeToggle: document.querySelector("#themeToggle"),
+  projectList: document.querySelector("#projectList"),
+  projectFileTree: document.querySelector("#projectFileTree"),
+  addProjectButton: document.querySelector("#addProjectButton"),
+  uploadZipInput: document.querySelector("#uploadZipInput"),
+  codeEditor: document.querySelector("#codeEditor"),
+  codeEditorPath: document.querySelector("#codeEditorPath"),
+  codeEditorContent: document.querySelector("#codeEditorContent"),
+  codeLangSelect: document.querySelector("#codeLangSelect"),
+  insertCodeBtn: document.querySelector("#insertCodeBtn")
 };
 
 if (window.notasUpdater) {
@@ -128,7 +140,10 @@ function normalizeState(value) {
     ...value,
     notebooks,
     notes,
-    selectedNoteId
+    selectedNoteId,
+    projects: Array.isArray(value.projects) ? value.projects : [],
+    activeProjectId: value.activeProjectId || null,
+    activeProjectFile: value.activeProjectFile || null
   };
 }
 
@@ -288,6 +303,8 @@ function renderCounts() {
   els.allCount.textContent = state.notes.filter((note) => !note.deleted).length;
   els.favoriteCount.textContent = state.notes.filter((note) => !note.deleted && note.favorite).length;
   els.trashCount.textContent = state.notes.filter((note) => note.deleted).length;
+  const pc = document.querySelector("#projectCount");
+  if (pc) pc.textContent = state.projects.length;
 }
 
 function renderNav() {
@@ -420,6 +437,8 @@ function renderEditor() {
 }
 
 function currentTitle() {
+  if (state.activeView === "projects") return "Proyectos";
+  if (state.activeView === "project-files") return "Archivos del proyecto";
   if (state.activeTag) return `Etiqueta: ${state.activeTag}`;
   if (state.activeNotebookId) return notebookName(state.activeNotebookId);
   if (state.activeView === "favorites") return "Favoritas";
@@ -442,8 +461,38 @@ function render() {
   renderNotebooks();
   renderTags();
   renderNotebookSelect();
-  renderNoteList();
-  renderEditor();
+
+  const isProjectView = state.activeView === "projects" || state.activeView === "project-files";
+  els.noteList.hidden = isProjectView;
+  if (els.projectList) els.projectList.hidden = state.activeView !== "projects";
+  if (els.projectFileTree) els.projectFileTree.hidden = state.activeView !== "project-files";
+  if (els.sortButton) els.sortButton.hidden = isProjectView;
+
+  if (state.activeView === "projects") {
+    renderProjects();
+    els.viewTitle.textContent = "Proyectos";
+    els.noteCountLabel.textContent = `${state.projects.length} ${state.projects.length === 1 ? "proyecto" : "proyectos"}`;
+  } else if (state.activeView === "project-files") {
+    renderProjectFiles();
+    const project = state.projects.find(p => p.id === state.activeProjectId);
+    els.viewTitle.textContent = project ? project.name : "Archivos del proyecto";
+    els.noteCountLabel.textContent = `${project ? project.files.length : 0} archivos`;
+  } else {
+    renderNoteList();
+  }
+
+  const isProjectFile = state.activeView === "project-files" && state.activeProjectFile;
+  if (els.codeEditor) els.codeEditor.hidden = !isProjectFile;
+  els.editor.classList.toggle("visible", !isProjectFile && Boolean(selectedNote()));
+  els.emptyState.classList.toggle("hidden", isProjectFile || Boolean(selectedNote()));
+
+  if (isProjectFile) {
+    renderCodeEditor();
+  } else {
+    renderEditor();
+  }
+
+  if (typeof Prism !== "undefined") Prism.highlightAll();
 }
 
 function exportData() {
@@ -473,6 +522,122 @@ function importData(file) {
     }
   };
   reader.readAsText(file);
+}
+
+function detectLanguage(filePath) {
+  const ext = filePath.split(".").pop().toLowerCase();
+  const map = {
+    js: "javascript", ts: "typescript", py: "python", html: "html", htm: "html",
+    css: "css", jsx: "jsx", tsx: "tsx", sh: "bash", bash: "bash",
+    json: "json", md: "markdown", sql: "sql", rb: "ruby", java: "java",
+    c: "c", cpp: "cpp", cs: "csharp", go: "go", rs: "rust",
+    php: "php", yaml: "yaml", yml: "yaml", xml: "xml", svg: "xml",
+    txt: "text", mjs: "javascript", cjs: "javascript", mts: "typescript", cts: "typescript"
+  };
+  return map[ext] || "";
+}
+
+function fileIcon(language) {
+  const icons = { javascript: "📜", typescript: "📘", python: "🐍", html: "🌐", css: "🎨", jsx: "⚛️", bash: "⚙️", json: "📋", markdown: "📝", sql: "🗄️" };
+  return icons[language] || "📄";
+}
+
+function createProject() {
+  const name = prompt("Nombre del proyecto");
+  if (!name?.trim()) return;
+  const project = { id: crypto.randomUUID(), name: name.trim(), files: [] };
+  state.projects.push(project);
+  state.activeProjectId = project.id;
+  state.activeView = "project-files";
+  state.activeProjectFile = null;
+  render();
+  persist();
+}
+
+function renderProjects() {
+  const container = document.querySelector("#projectCards");
+  if (!container) return;
+  container.innerHTML = "";
+  state.projects.forEach((project) => {
+    const card = document.createElement("div");
+    card.className = "project-card";
+    card.innerHTML = `<strong>${project.name}</strong><span>${project.files.length} archivos</span>`;
+    card.addEventListener("click", () => {
+      state.activeView = "project-files";
+      state.activeProjectId = project.id;
+      state.activeProjectFile = null;
+      render();
+      persist();
+    });
+    container.append(card);
+  });
+}
+
+function renderProjectFiles() {
+  const project = state.projects.find((p) => p.id === state.activeProjectId);
+  if (!project) { state.activeView = "projects"; render(); return; }
+  const title = document.querySelector("#projectTreeTitle");
+  if (title) title.textContent = project.name;
+  const container = document.querySelector("#fileTreeItems");
+  if (!container) return;
+  container.innerHTML = "";
+  project.files.forEach((file) => {
+    const item = document.createElement("button");
+    item.className = "file-tree-item";
+    item.type = "button";
+    item.classList.toggle("active", file.path === state.activeProjectFile);
+    item.innerHTML = `<span>${fileIcon(file.language)}</span> ${file.path}`;
+    item.addEventListener("click", () => openProjectFile(file.path));
+    container.append(item);
+  });
+}
+
+function openProjectFile(filePath) {
+  state.activeProjectFile = filePath;
+  render();
+  persist();
+}
+
+function renderCodeEditor() {
+  const project = state.projects.find((p) => p.id === state.activeProjectId);
+  if (!project) return;
+  const file = project.files.find((f) => f.path === state.activeProjectFile);
+  if (!file) return;
+  els.codeEditorPath.textContent = file.path;
+  els.codeEditorContent.value = file.content;
+}
+
+async function uploadZip() {
+  const file = els.uploadZipInput.files[0];
+  if (!file) return;
+  if (typeof JSZip === "undefined") { alert("JSZip no esta disponible"); return; }
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    const entries = [];
+    zip.forEach((relativePath, zipEntry) => {
+      if (!zipEntry.dir) entries.push(relativePath);
+    });
+    const project = state.projects.find((p) => p.id === state.activeProjectId);
+    if (!project) return;
+    for (const relativePath of entries) {
+      const zipEntry = zip.file(relativePath);
+      const content = await zipEntry.async("string");
+      const language = detectLanguage(relativePath);
+      const existing = project.files.findIndex((f) => f.path === relativePath);
+      if (existing >= 0) {
+        project.files[existing].content = content;
+        project.files[existing].language = language;
+      } else {
+        project.files.push({ path: relativePath, content, language });
+      }
+    }
+    renderProjectFiles();
+    persist();
+  } catch (err) {
+    alert("Error al procesar el ZIP: " + err.message);
+  }
+  els.uploadZipInput.value = "";
 }
 
 els.newNoteButton.addEventListener("click", createNote);
@@ -507,6 +672,22 @@ document.querySelectorAll("[data-command]").forEach((button) => {
   });
 });
 
+if (els.insertCodeBtn) {
+  els.insertCodeBtn.addEventListener("click", () => {
+    const lang = els.codeLangSelect.value;
+    const codeClass = lang ? ` class="language-${lang}"` : "";
+    els.contentInput.focus();
+    const sel = window.getSelection();
+    let text = "";
+    if (sel.rangeCount) {
+      text = sel.toString();
+    }
+    const code = `<pre><code${codeClass}>${text}</code></pre>`;
+    document.execCommand("insertHTML", false, code);
+    updateSelectedNote({ content: els.contentInput.innerHTML });
+  });
+}
+
 els.titleInput.addEventListener("input", () => updateSelectedNote({ title: els.titleInput.value }));
 els.tagInput.addEventListener("input", () => {
   const tags = els.tagInput.value
@@ -529,6 +710,35 @@ els.contentInput.addEventListener("keydown", (e) => {
   }
 });
 els.notebookSelect.addEventListener("change", () => updateSelectedNote({ notebookId: els.notebookSelect.value }));
+
+if (els.addProjectButton) {
+  els.addProjectButton.addEventListener("click", createProject);
+}
+if (els.uploadZipInput) {
+  els.uploadZipInput.addEventListener("change", uploadZip);
+}
+const backBtn = document.querySelector("#backToProjectsBtn");
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    state.activeView = "projects";
+    state.activeProjectId = null;
+    state.activeProjectFile = null;
+    render();
+    persist();
+  });
+}
+if (els.codeEditorContent) {
+  els.codeEditorContent.addEventListener("input", () => {
+    const project = state.projects.find((p) => p.id === state.activeProjectId);
+    if (project && state.activeProjectFile) {
+      const file = project.files.find((f) => f.path === state.activeProjectFile);
+      if (file) {
+        file.content = els.codeEditorContent.value;
+        scheduleSave();
+      }
+    }
+  });
+}
 els.favoriteButton.addEventListener("click", () => {
   const note = selectedNote();
   if (note) updateSelectedNote({ favorite: !note.favorite });

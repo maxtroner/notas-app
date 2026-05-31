@@ -7,7 +7,8 @@
     <title>CodeNote</title>
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
   </head>
   <body>
     <div class="app-shell">
@@ -66,7 +67,12 @@
           <div class="tag-cloud" id="tagCloud"></div>
         </section>
 
-        <nav class="nav-groups bottom-nav" aria-label="Papelera">
+        <nav class="nav-groups bottom-nav" aria-label="Proyectos y papelera">
+          <button class="nav-item" type="button" data-view="projects">
+            <span aria-hidden="true">📁</span>
+            Proyectos
+            <em id="projectCount">0</em>
+          </button>
           <button class="nav-item" type="button" data-view="trash">
             <span aria-hidden="true">♲</span>
             Papelera
@@ -96,6 +102,20 @@
             <button class="sort-button" id="sortButton" type="button" title="Ordenar">Mas recientes⌄</button>
           </div>
           <div class="note-list" id="noteList"></div>
+          <div class="project-list" id="projectList" hidden>
+            <div class="project-list-header">
+              <button class="primary-action compact" id="addProjectButton" type="button">+ Nuevo proyecto</button>
+              <label class="file-picker ghost-action compact">Subir ZIP<input id="uploadZipInput" type="file" accept=".zip"></label>
+            </div>
+            <div id="projectCards"></div>
+          </div>
+          <div class="project-file-tree" id="projectFileTree" hidden>
+            <div class="project-tree-header">
+              <button class="ghost-action compact" id="backToProjectsBtn" type="button">← Volver</button>
+              <span id="projectTreeTitle">Proyecto</span>
+            </div>
+            <div id="fileTreeItems"></div>
+          </div>
         </section>
 
         <section class="editor-panel" aria-label="Editor de nota">
@@ -138,12 +158,31 @@
               <button class="tool-button" type="button" data-command="insertOrderedList" title="Lista numerada">1.</button>
               <button class="tool-button" type="button" data-command="insertHTML" data-value="<p>☐ </p>" title="Checklist">☑</button>
               <span class="tool-separator"></span>
-              <button class="tool-button" type="button" data-command="formatBlock" data-value="pre" title="Codigo">&lt;&gt;</button>
+              <select id="codeLangSelect" class="code-lang-select" title="Lenguaje">
+                <option value="">Auto</option>
+                <option value="javascript">JavaScript</option>
+                <option value="typescript">TypeScript</option>
+                <option value="python">Python</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="jsx">JSX</option>
+                <option value="bash">Bash</option>
+                <option value="json">JSON</option>
+                <option value="markdown">Markdown</option>
+                <option value="sql">SQL</option>
+              </select>
+              <button class="tool-button accent-tool" type="button" id="insertCodeBtn" title="Insertar codigo">&lt;/&gt;</button>
             </div>
 
             <input id="titleInput" class="title-input" type="text" placeholder="Titulo de la nota">
             <div id="contentInput" class="content-input" contenteditable="true" data-placeholder="Empieza a escribir..."></div>
           </article>
+          <div class="code-editor" id="codeEditor" hidden>
+            <div class="code-editor-header">
+              <span id="codeEditorPath" class="code-editor-path">archivo.js</span>
+            </div>
+            <textarea id="codeEditorContent" class="code-editor-textarea" spellcheck="false"></textarea>
+          </div>
         </section>
       </main>
     </div>
@@ -152,6 +191,9 @@
       <button id="contextDeleteBtn" type="button">Eliminar</button>
     </div>
 
-    <script src="app.js?v=2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js?v=3"></script>
   </body>
 </html>
