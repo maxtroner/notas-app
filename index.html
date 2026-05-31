@@ -67,14 +67,9 @@
           <div class="tag-cloud" id="tagCloud"></div>
         </section>
 
-        <nav class="nav-groups bottom-nav" aria-label="Proyectos y papelera">
-          <button class="nav-item" type="button" data-view="projects">
-            <span aria-hidden="true">📁</span>
-            Proyectos
-            <em id="projectCount">0</em>
-          </button>
+        <nav class="nav-groups bottom-nav" aria-label="Papelera">
           <button class="nav-item" type="button" data-view="trash">
-            <span aria-hidden="true">♲</span>
+            <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span>
             Papelera
             <em id="trashCount">0</em>
           </button>
@@ -102,28 +97,9 @@
             <button class="sort-button" id="sortButton" type="button" title="Ordenar">Mas recientes⌄</button>
           </div>
           <div class="note-list" id="noteList"></div>
-          <div class="project-list" id="projectList" hidden>
-            <div class="project-list-header">
-              <button class="primary-action compact" id="addProjectButton" type="button">+ Nuevo proyecto</button>
-              <label class="file-picker ghost-action compact">Subir ZIP<input id="uploadZipInput" type="file" accept=".zip"></label>
-            </div>
-            <div id="projectCards"></div>
-          </div>
-          <div class="project-file-tree" id="projectFileTree" hidden>
-            <div class="project-tree-header">
-              <button class="ghost-action compact" id="backToProjectsBtn" type="button">← Volver</button>
-              <span id="projectTreeTitle">Proyecto</span>
-            </div>
-            <div id="fileTreeItems"></div>
-          </div>
         </section>
 
         <section class="editor-panel" aria-label="Editor de nota">
-          <div id="updateBanner" class="update-banner" hidden>
-            <span id="updateBannerText">Actualizacion disponible</span>
-            <button id="updateInstallBtn" type="button" class="update-install-btn">Instalar ahora</button>
-            <button id="updateDismissBtn" type="button" class="update-dismiss-btn">&times;</button>
-          </div>
           <div class="empty-state" id="emptyState">
             <h1>Elige una nota o crea una nueva</h1>
             <p>Tu contenido se guarda automaticamente en este equipo.</p>
@@ -177,12 +153,6 @@
             <input id="titleInput" class="title-input" type="text" placeholder="Titulo de la nota">
             <div id="contentInput" class="content-input" contenteditable="true" data-placeholder="Empieza a escribir..."></div>
           </article>
-          <div class="code-editor" id="codeEditor" hidden>
-            <div class="code-editor-header">
-              <span id="codeEditorPath" class="code-editor-path">archivo.js</span>
-            </div>
-            <textarea id="codeEditorContent" class="code-editor-textarea" spellcheck="false"></textarea>
-          </div>
         </section>
       </main>
     </div>
@@ -191,9 +161,25 @@
       <button id="contextDeleteBtn" type="button">Eliminar</button>
     </div>
 
+    <div id="updateModal" class="modal-overlay" hidden>
+      <div class="modal-content">
+        <div class="modal-header">
+          <strong>Actualizacion disponible</strong>
+          <button id="updateModalClose" type="button" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p id="updateModalText">Descargando actualizacion...</p>
+          <div id="updateReleaseNotes" class="release-notes"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="updateLaterBtn" type="button" class="ghost-action">Mas tarde</button>
+          <button id="updateInstallBtn" type="button" class="primary-action" style="width:auto;padding:0 20px">Instalar ahora</button>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
   </body>
 </html>
