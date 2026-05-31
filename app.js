@@ -1,5 +1,12 @@
 const STORAGE_KEY = "notas.evernote.local.v1";
 
+function trashIcon() {
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
+}
+function restoreIcon() {
+  return '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>';
+}
+
 const initialState = {
   notebooks: [
     { id: "inbox", name: "Mi primer libreta", icon: "🚀" },
@@ -353,7 +360,7 @@ function renderNoteList() {
     delBtn.className = "note-card-delete";
     delBtn.type = "button";
     delBtn.title = note.deleted ? "Restaurar" : "Eliminar";
-    delBtn.textContent = note.deleted ? "↺" : "♲";
+    delBtn.innerHTML = note.deleted ? restoreIcon() : trashIcon();
     card.append(delBtn);
 
     content.addEventListener("click", () => {
@@ -399,7 +406,7 @@ function renderEditor() {
   els.contentInput.innerHTML = note.content;
   els.notebookSelect.value = note.notebookId;
   els.favoriteButton.classList.toggle("active", note.favorite);
-  els.deleteButton.textContent = note.deleted ? "↺" : "♲";
+  els.deleteButton.innerHTML = note.deleted ? restoreIcon() : trashIcon();
   els.deleteButton.title = note.deleted ? "Restaurar" : "Eliminar";
 }
 
@@ -500,6 +507,18 @@ els.tagInput.addEventListener("input", () => {
   updateSelectedNote({ tags: [...new Set(tags)] });
 });
 els.contentInput.addEventListener("input", () => updateSelectedNote({ content: els.contentInput.innerHTML }));
+els.contentInput.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    let node = sel.anchorNode;
+    if (node?.nodeType === Node.TEXT_NODE) node = node.parentElement;
+    if (node?.closest?.("pre")) {
+      e.preventDefault();
+      document.execCommand("insertText", false, "  ");
+    }
+  }
+});
 els.notebookSelect.addEventListener("change", () => updateSelectedNote({ notebookId: els.notebookSelect.value }));
 els.favoriteButton.addEventListener("click", () => {
   const note = selectedNote();
@@ -510,7 +529,8 @@ els.deleteButton.addEventListener("click", deleteOrRestoreSelected);
 
 function showContextMenu(x, y, note) {
   const menu = els.contextMenu;
-  els.contextDeleteBtn.textContent = note.deleted ? "Restaurar" : "Eliminar";
+  const icon = note.deleted ? restoreIcon() : trashIcon();
+  els.contextDeleteBtn.innerHTML = `${icon} ${note.deleted ? "Restaurar" : "Eliminar"}`;
   menu.style.left = x + "px";
   menu.style.top = y + "px";
   menu.hidden = false;
