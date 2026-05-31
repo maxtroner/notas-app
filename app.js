@@ -332,10 +332,12 @@ function renderNoteList() {
   els.viewTitle.textContent = currentTitle();
 
   notes.forEach((note) => {
-    const button = document.createElement("button");
-    button.className = "note-card";
-    button.type = "button";
-    button.classList.toggle("active", note.id === state.selectedNoteId);
+    const card = document.createElement("div");
+    card.className = "note-card";
+    card.classList.toggle("active", note.id === state.selectedNoteId);
+
+    const content = document.createElement("div");
+    content.className = "note-card-content";
 
     const title = document.createElement("strong");
     title.textContent = `${note.favorite ? "* " : ""}${note.title || "Sin titulo"}`;
@@ -344,20 +346,34 @@ function renderNoteList() {
     const meta = document.createElement("small");
     meta.textContent = formatDate(note.updatedAt);
 
-    button.append(title, excerpt, meta);
-    button.addEventListener("click", () => {
+    content.append(title, excerpt, meta);
+    card.append(content);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "note-card-delete";
+    delBtn.type = "button";
+    delBtn.title = note.deleted ? "Restaurar" : "Eliminar";
+    delBtn.textContent = note.deleted ? "↺" : "♲";
+    card.append(delBtn);
+
+    content.addEventListener("click", () => {
       state.selectedNoteId = note.id;
       render();
       persist();
     });
-    button.addEventListener("contextmenu", (e) => {
+    delBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      state.selectedNoteId = note.id;
+      deleteOrRestoreSelected();
+    });
+    card.addEventListener("contextmenu", (e) => {
       e.preventDefault();
       state.selectedNoteId = note.id;
       render();
       persist();
       showContextMenu(e.clientX, e.clientY, note);
     });
-    els.noteList.append(button);
+    els.noteList.append(card);
   });
 }
 

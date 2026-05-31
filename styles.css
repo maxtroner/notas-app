@@ -401,8 +401,7 @@ button {
 }
 
 .note-card {
-  display: grid;
-  gap: 8px;
+  position: relative;
   width: 100%;
   min-height: 114px;
   padding: 16px 20px 14px;
@@ -411,6 +410,7 @@ button {
   background: transparent;
   color: var(--ink);
   text-align: left;
+  cursor: pointer;
 }
 
 .note-card:hover,
@@ -422,7 +422,12 @@ button {
   box-shadow: inset 3px 0 0 var(--evernote);
 }
 
-.note-card strong {
+.note-card-content {
+  display: grid;
+  gap: 8px;
+}
+
+.note-card-content strong {
   overflow: hidden;
   color: #11181c;
   font-size: 15px;
@@ -431,7 +436,7 @@ button {
   white-space: nowrap;
 }
 
-.note-card p {
+.note-card-content p {
   display: -webkit-box;
   min-height: 38px;
   margin: 0;
@@ -443,9 +448,35 @@ button {
   -webkit-line-clamp: 2;
 }
 
-.note-card small {
+.note-card-content small {
   color: #7d8992;
   font-size: 12px;
+}
+
+.note-card-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.note-card:hover .note-card-delete {
+  display: grid;
+}
+
+.note-card-delete:hover {
+  color: var(--ink);
+  background: rgba(0,0,0,0.06);
 }
 
 .editor-panel {
