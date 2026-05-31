@@ -24,8 +24,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload installer to release
+      - name: Create release and upload installer
         run: |
-          gh release upload ${{ github.ref_name }} dist/*.exe dist/*.yml --clobber
+          gh release create ${{ github.ref_name }} dist/*.exe dist/*.yml --generate-notes --clobber || gh release upload ${{ github.ref_name }} dist/*.exe dist/*.yml --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
