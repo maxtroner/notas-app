@@ -24,8 +24,7 @@
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12",
-    "http-server": "^14.1.1",
-    "sharp": "^0.33.5"
+    "http-server": "^14.1.1"
   },
   "build": {
     "appId": "com.maxtronerpc.codenote",
