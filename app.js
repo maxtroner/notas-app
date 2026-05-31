@@ -63,7 +63,9 @@ const els = {
   deleteButton: document.querySelector("#deleteButton"),
   statusLine: document.querySelector("#statusLine"),
   exportButton: document.querySelector("#exportButton"),
-  importInput: document.querySelector("#importInput")
+  importInput: document.querySelector("#importInput"),
+  contextMenu: document.querySelector("#contextMenu"),
+  contextDeleteBtn: document.querySelector("#contextDeleteBtn")
 };
 
 if (window.notasUpdater) {
@@ -348,6 +350,13 @@ function renderNoteList() {
       render();
       persist();
     });
+    button.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      state.selectedNoteId = note.id;
+      render();
+      persist();
+      showContextMenu(e.clientX, e.clientY, note);
+    });
     els.noteList.append(button);
   });
 }
@@ -482,6 +491,42 @@ els.favoriteButton.addEventListener("click", () => {
   renderEditor();
 });
 els.deleteButton.addEventListener("click", deleteOrRestoreSelected);
+
+function showContextMenu(x, y, note) {
+  const menu = els.contextMenu;
+  els.contextDeleteBtn.textContent = note.deleted ? "Restaurar" : "Eliminar";
+  menu.style.left = x + "px";
+  menu.style.top = y + "px";
+  menu.hidden = false;
+}
+
+function hideContextMenu() {
+  els.contextMenu.hidden = true;
+}
+
+els.contextDeleteBtn.addEventListener("click", () => {
+  hideContextMenu();
+  deleteOrRestoreSelected();
+});
+
+document.addEventListener("click", (e) => {
+  if (!e.target.closest("#contextMenu")) hideContextMenu();
+});
+
+document.addEventListener("contextmenu", (e) => {
+  if (!e.target.closest(".note-card")) hideContextMenu();
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    hideContextMenu();
+    return;
+  }
+  if (e.key !== "Delete") return;
+  const tag = document.activeElement?.tagName;
+  if (tag === "INPUT" || tag === "TEXTAREA" || document.activeElement?.isContentEditable) return;
+  deleteOrRestoreSelected();
+});
 
 window.addEventListener("beforeunload", persist);
 
