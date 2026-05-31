@@ -16,7 +16,7 @@ function createWindow() {
     height: 860,
     minWidth: 980,
     minHeight: 680,
-    title: "Notas",
+    title: "CodeNote",
     backgroundColor: "#f6f4ee",
     autoHideMenuBar: true,
     webPreferences: {

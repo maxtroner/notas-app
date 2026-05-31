@@ -1,7 +1,7 @@
 {
-  "name": "notas-evernote-windows",
-  "version": "1.0.6",
-  "description": "Sistema de notas local inspirado en Evernote para Windows 11.",
+  "name": "codenote-app",
+  "version": "1.0.7",
+  "description": "CodeNote - Notas inteligentes para desarrolladores.",
   "main": "main.cjs",
   "scripts": {
     "start": "electron .",
@@ -11,8 +11,8 @@
   },
   "keywords": [
     "notas",
-    "evernote",
-    "windows",
+    "codenote",
+    "desarrollador",
     "electron",
     "pwa"
   ],
@@ -24,15 +24,17 @@
   "devDependencies": {
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12",
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "sharp": "^0.33.5"
   },
   "build": {
-    "appId": "com.maxtronerpc.notas",
-    "productName": "Notas",
+    "appId": "com.maxtronerpc.codenote",
+    "productName": "CodeNote",
     "directories": {
       "output": "dist"
     },
     "artifactName": "${productName}-Setup-${version}.${ext}",
+    "icon": "assets/icon.png",
     "files": [
       "index.html",
       "styles.css",
@@ -48,9 +50,23 @@
         "provider": "github",
         "owner": "maxtroner",
         "repo": "notas-app",
-        "private": true,
         "releaseType": "release"
       }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}
     ],
     "win": {
       "signAndEditExecutable": false,

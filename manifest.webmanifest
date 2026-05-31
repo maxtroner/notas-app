@@ -1,17 +1,23 @@
 {
-  "name": "Notas",
-  "short_name": "Notas",
-  "description": "Sistema de notas local inspirado en Evernote.",
+  "name": "CodeNote",
+  "short_name": "CodeNote",
+  "description": "CodeNote - Notas inteligentes para desarrolladores.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f6f4ee",
-  "theme_color": "#1f6f50",
+  "theme_color": "#00c853",
   "icons": [
     {
       "src": "assets/icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }

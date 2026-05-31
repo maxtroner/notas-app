@@ -76,7 +76,8 @@ const els = {
   updateBanner: document.querySelector("#updateBanner"),
   updateBannerText: document.querySelector("#updateBannerText"),
   updateInstallBtn: document.querySelector("#updateInstallBtn"),
-  updateDismissBtn: document.querySelector("#updateDismissBtn")
+  updateDismissBtn: document.querySelector("#updateDismissBtn"),
+  themeToggle: document.querySelector("#themeToggle")
 };
 
 if (window.notasUpdater) {
@@ -566,7 +567,39 @@ document.addEventListener("contextmenu", (e) => {
   if (!e.target.closest(".note-card")) hideContextMenu();
 });
 
+const STORAGE_THEME_KEY = "codenote.theme";
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem(STORAGE_THEME_KEY, theme);
+  const isDark = theme === "dark";
+  els.themeToggle.title = isDark ? "Modo claro" : "Modo oscuro";
+  els.themeToggle.innerHTML = isDark
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+}
+
+const savedTheme = localStorage.getItem(STORAGE_THEME_KEY) || "light";
+applyTheme(savedTheme);
+
+els.themeToggle.addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  applyTheme(current === "dark" ? "light" : "dark");
+});
+
 document.addEventListener("keydown", (e) => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (ctrl && e.key === "n") {
+    e.preventDefault();
+    createNote();
+    return;
+  }
+  if (ctrl && e.key === "e") {
+    e.preventDefault();
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
+    return;
+  }
   if (e.key === "Escape") {
     hideContextMenu();
     return;

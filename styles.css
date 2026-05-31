@@ -15,6 +15,35 @@
   --muted: #6f7a83;
   --white: #ffffff;
   --danger: #596168;
+  --editor-bg: #ffffff;
+  --pre-bg: #f6f8fa;
+  --banner-bg: #e8f5e9;
+  --banner-border: #c8e6c9;
+  --banner-text: #1b5e20;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --sidebar: #0d1117;
+  --sidebar-raised: #161b22;
+  --sidebar-active: #21262d;
+  --sidebar-text: #c9d1d9;
+  --sidebar-muted: #8b949e;
+  --evernote: #00c853;
+  --evernote-dark: #00a82d;
+  --list-bg: #0d1117;
+  --list-active: #1c2128;
+  --line: #30363d;
+  --line-soft: #21262d;
+  --ink: #e6edf3;
+  --muted: #8b949e;
+  --white: #161b22;
+  --danger: #d47677;
+  --editor-bg: #161b22;
+  --pre-bg: #1c2128;
+  --banner-bg: #1b3a20;
+  --banner-border: #2d5a33;
+  --banner-text: #7ee08f;
 }
 
 * {
@@ -771,6 +800,81 @@ button {
 
 .context-menu button:hover {
   background: var(--list-active);
+}
+
+.theme-toggle {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 32px;
+  border: 1px solid #2c3337;
+  border-radius: 4px;
+  background: transparent;
+  color: #c9d1d8;
+}
+
+.theme-toggle:hover {
+  border-color: #465058;
+  color: white;
+}
+
+[data-theme="dark"] .theme-toggle {
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+[data-theme="dark"] body {
+  background: var(--white);
+}
+
+[data-theme="dark"] .editor-header {
+  background: var(--editor-bg);
+}
+
+[data-theme="dark"] .format-toolbar {
+  background: var(--editor-bg);
+  border-bottom-color: var(--line);
+}
+
+[data-theme="dark"] .tool-button:hover,
+[data-theme="dark"] .tool-button.active {
+  background: var(--sidebar-active);
+  color: var(--ink);
+}
+
+[data-theme="dark"] .content-input blockquote {
+  background: #1c2128;
+  color: var(--ink);
+}
+
+[data-theme="dark"] .content-input code {
+  background: #252c35;
+  color: #ff7b72;
+}
+
+[data-theme="dark"] .note-card-content p {
+  color: var(--muted);
+}
+
+[data-theme="dark"] .note-card-content small {
+  color: var(--muted);
+}
+
+[data-theme="dark"] .update-banner {
+  background: var(--banner-bg);
+  border-bottom-color: var(--banner-border);
+  color: var(--banner-text);
+}
+
+[data-theme="dark"] .update-dismiss-btn {
+  color: var(--banner-text);
 }
 
 @media (max-width: 1180px) {
