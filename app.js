@@ -72,13 +72,21 @@ const els = {
   exportButton: document.querySelector("#exportButton"),
   importInput: document.querySelector("#importInput"),
   contextMenu: document.querySelector("#contextMenu"),
-  contextDeleteBtn: document.querySelector("#contextDeleteBtn")
+  contextDeleteBtn: document.querySelector("#contextDeleteBtn"),
+  updateBanner: document.querySelector("#updateBanner"),
+  updateBannerText: document.querySelector("#updateBannerText"),
+  updateInstallBtn: document.querySelector("#updateInstallBtn"),
+  updateDismissBtn: document.querySelector("#updateDismissBtn")
 };
 
 if (window.notasUpdater) {
   window.notasUpdater.onStatus((payload) => {
     if (!payload?.message) return;
     els.statusLine.textContent = payload.message;
+    if (payload.state === "downloaded") {
+      els.updateBannerText.textContent = payload.message;
+      els.updateBanner.hidden = false;
+    }
   });
 }
 
@@ -526,6 +534,11 @@ els.favoriteButton.addEventListener("click", () => {
   renderEditor();
 });
 els.deleteButton.addEventListener("click", deleteOrRestoreSelected);
+
+if (window.notasUpdater) {
+  els.updateInstallBtn.addEventListener("click", () => window.notasUpdater.installUpdate());
+  els.updateDismissBtn.addEventListener("click", () => { els.updateBanner.hidden = true; });
+}
 
 function showContextMenu(x, y, note) {
   const menu = els.contextMenu;

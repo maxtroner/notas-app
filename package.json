@@ -1,6 +1,6 @@
 {
   "name": "notas-evernote-windows",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Sistema de notas local inspirado en Evernote para Windows 11.",
   "main": "main.cjs",
   "scripts": {

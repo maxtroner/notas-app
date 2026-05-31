@@ -479,6 +479,50 @@ button {
   background: rgba(0,0,0,0.06);
 }
 
+.update-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  background: #e8f5e9;
+  border-bottom: 1px solid #c8e6c9;
+  color: #1b5e20;
+  font-size: 13px;
+}
+
+.update-banner span {
+  flex: 1;
+}
+
+.update-install-btn {
+  padding: 5px 14px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--evernote);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.update-install-btn:hover {
+  background: var(--evernote-dark);
+}
+
+.update-dismiss-btn {
+  width: 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #558b2f;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.update-dismiss-btn:hover {
+  background: rgba(0,0,0,0.06);
+}
+
 .editor-panel {
   min-width: 0;
   overflow: hidden;
