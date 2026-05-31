@@ -67,18 +67,3 @@
     }
   }
 }
-    ],
-    "win": {
-      "signAndEditExecutable": false,
-      "target": [
-        "nsis"
-      ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
-    }
-  }
-}
